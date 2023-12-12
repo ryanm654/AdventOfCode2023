@@ -108,8 +108,6 @@ export const findFurthestStepsFromStart = (input: string): number => {
     const pipeArray: PipeArray = buildArray(sanitisedString);
     const distanceArray = generatePipeDetails(pipeArray).distanceArray;    
 
-    console.log(distanceArray);
-
     let max: number = -1;
 
     distanceArray.forEach((line) => {
@@ -120,20 +118,60 @@ export const findFurthestStepsFromStart = (input: string): number => {
     return max;
 };
 
+export const pipeIsVerticalCorner = (wall: string): boolean => {
+    return wall == 'F' || wall == 'L';
+}
+
 export const countTilesEnclosedByLoop = (input: string): number => {
     const sanitisedString = input.replace(/\r/g, '');
     const pipeArray: PipeArray = buildArray(sanitisedString);
-    const pipeDetails = generatePipeDetails(pipeArray); 
+    const pipeDetails: PipeConnectionDetails = generatePipeDetails(pipeArray); 
     const distanceArray = pipeDetails.distanceArray;
     const foundConnections = pipeDetails.foundConnections;
 
-    // All tiles currently not part of the loop are painted as -1 in distance array
-    // Loop through pipe array
-        // If distance array at index is -1 (not part of loop)
-            // Do something to find out if it is inside or outside
-            // If inside, increase count of inside loop
+    let count = 0;
 
-    // Return count
+    distanceArray.forEach((line: Array<number>, yIndex) => {
+        let insideLoop = false;
+        let wallStartValue = '';
 
-    return 0;
+        line.forEach((value: number, index) => {
+            if (index != 0 && index != line.length - 1) {
+                if (value != -1) {
+                    const wall = pipeArray[yIndex][index];
+                    if (wall == '|' || wall == 'S') {
+                        insideLoop = !insideLoop;
+                    }
+                    else if ((wall == 'F' || wall == 'L')) {
+                        wallStartValue = wall;
+                    }
+                    else if (wallStartValue != '' && (wall == '7' || wall == 'J')) {
+                        switch(wallStartValue) {
+                            case 'F': {
+                                if (wall == 'J') {
+                                    insideLoop = !insideLoop;
+                                }
+                                wallStartValue = '';
+                                break;
+                            }
+                            case 'L': {
+                                if (wall == '7') {
+                                    insideLoop = !insideLoop;
+                                }
+                                wallStartValue = '';
+                                break;
+                            }
+                            default: break;
+                        }
+                    }
+                }
+                if (value == -1 && insideLoop) {
+                    count++;
+                    wallStartValue == '';
+                }
+            }
+        });
+    });
+
+    return count;
 }

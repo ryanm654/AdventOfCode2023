@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { alreadyInConnections, findConnectingPipes, findFurthestStepsFromStart, findS, pipeConnectsEast, pipeConnectsNorth, pipeConnectsSouth, pipeConnectsWest } from './pipeUtils';
+import { alreadyInConnections, countTilesEnclosedByLoop, findConnectingPipes, findFurthestStepsFromStart, findS, pipeConnectsEast, pipeConnectsNorth, pipeConnectsSouth, pipeConnectsWest } from './pipeUtils';
 import { PipeArray, CoOrdinate } from "./Types";
 
 describe("Pipe traversal utils", () => {
@@ -85,3 +85,19 @@ describe("Day 10 Part 1", () => {
         expect(findFurthestStepsFromStart(input)).toEqual(expected);
     });
 });
+
+describe("Day 10 Part 2", () => {
+    test("Given test input 3, expect tiles within loop to be 4", () => {
+        const input: string = fs.readFileSync('./day10/test3', 'utf-8');
+        const expected = 4;
+
+        expect(countTilesEnclosedByLoop(input)).toEqual(expected);
+    });
+
+    test("Given test input 4, expect tiles within loop to be 8", () => {
+        const input: string = fs.readFileSync('./day10/test4', 'utf-8');
+        const expected = 8;
+
+        expect(countTilesEnclosedByLoop(input)).toEqual(expected);
+    });
+})
